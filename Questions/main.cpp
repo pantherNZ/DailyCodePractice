@@ -8,6 +8,8 @@
 #include <string.h>
 #include <math.h>
 #include <unordered_set>
+#include <deque>
+#include <memory>
 
 struct IndexFrequency
 {
@@ -774,6 +776,115 @@ void StringPermutations(std::string _str)
 	std::cout << std::endl;
 }
 
+
+struct Tag
+{
+	std::string name;
+	std::string value;
+
+	Tag( std::string _name, std::string _value ) : name( _name ), value( _value ) { }
+};
+
+// String for the text, vector containing index's of the tags required into the tags_map array.
+typedef std::pair< std::string, std::deque< unsigned > > output_string;
+
+void ParseTextTags( std::string _str )
+{
+	// Stack containing the current tags
+	std::deque< unsigned > tags;
+	// All unique tags are saved here to save memory
+	std::vector< std::unique_ptr< Tag > > tag_map;	
+	// Final output is a vector of strings that have a list of tag index's attached
+	std::vector< output_string > output;
+
+	// Data
+	std::string current;
+	std::string value;
+	bool reading_tag = false;
+	bool end_tag = false;
+	bool value_tag = false;
+
+	// Loop through string
+	for( auto c : _str )
+	{
+		// Start of a tag
+		if( c == '<' )
+		{
+			// Only add text from before this tag if it is > 0 in size & isn't just a space
+			// This will save the text in these tags + the stack of tag index's right now
+			if( current.size() > 0 && current[ 0 ] != ' ' )
+				output.push_back( std::make_pair( current, tags ) );
+
+			current = "";
+			value = "";
+			reading_tag = true;
+			end_tag = false;
+			value_tag = false;
+		}
+		// Tag read in
+		else if( reading_tag )
+		{
+			// Ending tag (later used to check for a matching start tag)
+			if( c == '/' )
+				end_tag = true;
+			// End of a tag
+			else if( c == '>' )
+			{
+				// If we are an ending tag, find the matching start tag (and remove it)
+				if( end_tag )
+				{
+					if( tag_map.size() > tags.back() && current == tag_map[ tags.back() ]->name )
+						tags.pop_back();
+					else
+						std::cout << "\nParseTextTags: *Warning* - Ending tag without a matching start tag: \"" << current.c_str() << "\"";
+				}
+				else
+				{
+					// Otherwise let's check if this is a unique tag or not
+					unsigned index = 0;
+					const auto found = std::find_if( tag_map.begin(), tag_map.end(), [&current, &value, &index]( const std::unique_ptr< Tag >& t )
+					{
+						++index;
+						return t->name == current && t->value == value;
+					} );
+
+					// Create a new tag in the map if it is unique
+					if( found == tag_map.end() )
+					{
+						tag_map.push_back( std::make_unique< Tag >( current, value ) );
+						index = ( unsigned )tag_map.size();
+					}
+
+					// Add the index of the tag to the tags stack
+					tags.push_back( index - 1 );
+				}
+
+				current = "";
+			}
+			else if( c == '=' )
+			{
+				// End tags can't have a value
+				if( end_tag )
+					std::cout << "\nParseTextTags: *Warning* - Ending tag with a value: \"" << current.c_str() << "\"";
+				else
+					value_tag = true;
+			}
+			// Read into the value part of the tag
+			else if( value_tag )
+				value += c;
+			// Otherwise just regular read in
+			else
+				current += c;
+		}	
+		else
+			current += c;
+	}
+
+	// If at the end we aren't an ending tag, we will want to make sure we add the remaining text
+	if( _str.back() != '>' )
+		output.push_back( std::make_pair( current, tags ) );
+}
+
 int main()
 {
 	srand((unsigned int)(time(0)));
@@ -816,6 +927,8 @@ int main()
 	ShortestPalindrome("wasaw systematic wasiteliotstoiletisaw", str);
 
 	StringPermutations("ABC");
+
+	ParseTextTags( "Lorem ipsum <size=10>dolor sit amet,<size=5> <bold>consectetur</bold> <colour=red>adipiscing</colour> elit.</size> Donec eu arcu eget enim hendrerit</size> finibus eu vel<italic>dolor. In ultrices lorem odio, in condimentum massa luctus</italic> vel. Curabitur<size=15> id nibh mi. Proin orci erat,<size=12> porta in sem sit amet, condimentum aliquet ligula. Curabitur leo lacus,</size> aliquam <colour=green>auctor ullamcorper vitae, pulvinar eget lectus. Praesent <bold>felis risus, euismod at enim</bold> quis, consequat hendrerit magna.</colour> Class aptent <italic><bold> <colour=purple>taciti</colour></bold></italic> sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec varius sem sapien. Nam vitae scelerisque est, eget feugiat tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</size>" );
 
 	int iTemp;
 	std::cin >> iTemp;
