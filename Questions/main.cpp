@@ -55,7 +55,7 @@ void FrequentInt()
 			iHighestFreq = iValue;
 	}
 
-	std::cout << "\nHighest Frequency Number = " << iHighestFreq << std::endl;
+	std::cout << "\nHighest Frequency Number = " << iHighestFreq << "\n";
 }
 
 void IntegerPairs()
@@ -74,7 +74,7 @@ void IntegerPairs()
 		const auto found = set.find( iMax - vecArray[i] );
 		if( found != set.end() && found->second != i )
 		{
-			std::cout << "Pair found: " << vecArray[ i ] << " + " << iMax - vecArray[ i ] << std::endl;
+			std::cout << "Pair found: " << vecArray[ i ] << " + " << iMax - vecArray[ i ] << "\n";
 		}
 	}
 }
@@ -125,7 +125,7 @@ void Fibbonaci(int _iNumbers)
 		iTotal += iPrevious;
 		iPrevious = iTemp;
 
-		std::cout << "Fib " << i << " = " << iTotal << std::endl;
+		std::cout << "Fib " << i << " = " << iTotal << "\n";
 	}
 }
 
@@ -152,7 +152,7 @@ void Fibbonaci_Dynamic(int _iNumber)
 	for (int i = 2; i <= _iNumber; ++i)
 	{
 		pArray[i] = pArray[i - 1] + pArray[i - 2];
-		std::cout << "Fib " << i << " = " << pArray[i] << std::endl;
+		std::cout << "Fib " << i << " = " << pArray[i] << "\n";
 	}
 }
 
@@ -176,12 +176,12 @@ void UniqueInteger()
 	{
 		if (!map[i])
 		{
-			std::cout << "\nFirst unique integer = " << i << std::endl;
+			std::cout << "\nFirst unique integer = " << i << "\n";
 			return;
 		}
 	}
 
-	std::cout << "\nNo unique integers" << std::endl;
+	std::cout << "\nNo unique integers\n";
 }
 
 void CommonElements()
@@ -207,7 +207,7 @@ void CommonElements()
 		}
 	}
 
-	std::cout << std::endl;
+	std::cout << "\n";
 }
 
 bool BinarySearch_Recur(std::vector<int> _vector, const int _kiGoal, int& _riIndexResult)
@@ -286,7 +286,7 @@ void Primes(unsigned int _uiPrimes)
 		++iCounter;
 	}
 
-	std::cout << std::endl;
+	std::cout << "\n";
 }
 
 void BinaryForm(int _iValue)
@@ -304,14 +304,14 @@ void BinaryForm(int _iValue)
 		}
 	}
 
-	std::cout << std::endl;
+	std::cout << "\n";
 }
 
 bool ParseInt(std::string _str, int& _riVal)
 {
 	if (_str.length() == 0)
 	{
-		std::cout << "\nPaseInt: String failed to convert" << std::endl;
+		std::cout << "\nPaseInt: String failed to convert\n";
 		return(false);
 	}
 
@@ -332,14 +332,14 @@ bool ParseInt(std::string _str, int& _riVal)
 		}
 		else
 		{
-			std::cout << "\nPaseInt: String failed to convert" << std::endl;
+			std::cout << "\nPaseInt: String failed to convert\n";
 			return(false);
 		}
 	}
 
 	_riVal = (bNegative ? -_riVal : _riVal);
 
-	std::cout << "\nPaseInt: \"" << _str.c_str() << "\"converted to: " << _riVal << std::endl;
+	std::cout << "\nPaseInt: \"" << _str.c_str() << "\"converted to: " << _riVal << "\n";
 
 	return(true);
 }
@@ -371,7 +371,7 @@ double SquareRoot(double _dX)
 	}
 
 	double dResult = ldexp(dY, iExp / 2);
-	std::cout << "\nSquareRoot: Sqrt(" << _dX << ") = " << dResult << std::endl;
+	std::cout << "\nSquareRoot: Sqrt(" << _dX << ") = " << dResult << "\n";
 
 	return(dResult);
 }
@@ -405,7 +405,7 @@ double Multiply(double _dX, double _dY)
 	double dTotal = 0.0;
 
 	double dResult = Multiply_Recur(_dX, _dY, dTotal);
-	std::cout << "\nMultiply: " << _dX << "*" << _dY << " = " << dTotal << std::endl;
+	std::cout << "\nMultiply: " << _dX << "*" << _dY << " = " << dTotal << "\n";
 
 	return(dResult);
 }
@@ -500,10 +500,10 @@ int Islands()
 			std::cout << iArray[y][x];
 		}
 
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
 
-	std::cout << "\nCount = " << iIslands << std::endl;
+	std::cout << "\nCount = " << iIslands << "\n";
 
 	return(iIslands);
 }
@@ -529,13 +529,13 @@ bool FirstUniqueChar(std::string _str, char& _rc)
 	{
 		if (mapTable[c] == 0)
 		{
-			std::cout << "\nFirst unique char = " << c << std::endl;
+			std::cout << "\nFirst unique char = " << c << "\n";
 			_rc = c;
 			return(true);
 		}
 	}
 
-	std::cout << "\nNo unique chars" << std::endl;
+	std::cout << "\nNo unique chars\n";
 
 	return(false);
 }
@@ -552,7 +552,7 @@ std::string ReverseString(std::string _str)
 		_str[iIndex] = cTemp;
 	} 
 
-	std::cout << " = " << _str.c_str() << std::endl;
+	std::cout << " = " << _str.c_str() << "\n";
 
 	return(_str);
 }
@@ -571,7 +571,7 @@ std::string ReverseStringRecursive(std::string _strOrig)
 {
 	std::cout << "\nReverseString: " << _strOrig.c_str();
 	_strOrig = ReverseString_Recur(_strOrig, "", ( int )( _strOrig.length() - 1 ) );
-	std::cout << " = " << _strOrig.c_str() << std::endl;
+	std::cout << " = " << _strOrig.c_str() << "\n";
 	return(_strOrig);
 }
 
@@ -600,18 +600,18 @@ bool IsAnagram(std::string _str1, std::string _str2)
 
 			if (mapTable[c] < 0)
 			{
-				std::cout << std::endl << _str2.c_str() << " is not an anagram of " << _str1.c_str() << std::endl;
+				std::cout << "\n" << _str2.c_str() << " is not an anagram of " << _str1.c_str() << "\n";
 				return(false);
 			}
 		}
 		else
 		{
-			std::cout << std::endl << _str2.c_str() << " is not an anagram of " << _str1.c_str() << std::endl;
+			std::cout << "\n" << _str2.c_str() << " is not an anagram of " << _str1.c_str() << "\n";
 			return(false);
 		}
 	}
 
-	std::cout << std::endl << _str2.c_str() << " is an anagram of " << _str1.c_str() << std::endl;
+	std::cout << "\n" << _str2.c_str() << " is an anagram of " << _str1.c_str() << "\n";
 	return(true);
 }
 
@@ -621,12 +621,12 @@ bool IsPalindrome(std::string _str, bool _bShowOutput)
 	{
 		if (_str[i] != _str[_str.length() - 1 - i])
 		{
-			if(_bShowOutput) std::cout << std::endl << _str.c_str() << " is not a palindrome\n";
+			if(_bShowOutput) std::cout << "\n" << _str.c_str() << " is not a palindrome\n";
 			return(false);
 		}
 	}
 
-	if(_bShowOutput) std::cout << std::endl << _str.c_str() << " is a palindrome\n";
+	if(_bShowOutput) std::cout << "\n" << _str.c_str() << " is a palindrome\n";
 	return(true);
 }
 
@@ -639,7 +639,7 @@ bool IsStringUnique(std::string _str)
 	{
 		if (mapTable.find(c) != mapTable.end())
 		{
-			std::cout << std::endl << _str.c_str() << " does not contain unique characters\n";
+			std::cout << "\n" << _str.c_str() << " does not contain unique characters\n";
 			return(false);
 		}
 		else
@@ -648,7 +648,7 @@ bool IsStringUnique(std::string _str)
 		}
 	}
 
-	std::cout << std::endl << _str.c_str() << " contains unique characters\n";
+	std::cout << "\n" << _str.c_str() << " contains unique characters\n";
 	return(true);
 }
 
@@ -656,7 +656,7 @@ bool IsStringInt(std::string _str, bool& _rbIsDouble)
 {
 	if (_str.length() == 0)
 	{
-		std::cout << "\nIsStringInt: String is empty" << std::endl;
+		std::cout << "\nIsStringInt: String is empty\n";
 		return(false);
 	}
 
@@ -681,18 +681,18 @@ bool IsStringInt(std::string _str, bool& _rbIsDouble)
 			}
 			else
 			{
-				std::cout << "\nIsStringInt: String is not a valid number" << std::endl;
+				std::cout << "\nIsStringInt: String is not a valid number\n";
 				return(false);
 			}
 		}
 		else if(!(_str[uiCounter] >= '0' && _str[uiCounter] <= '9'))
 		{
-			std::cout << "\nIsStringInt: String is not a valid number" << std::endl;
+			std::cout << "\nIsStringInt: String is not a valid number\n";
 			return(false);
 		}
 	}
 
-	std::cout << "\nIsStringInt: \"" << _str.c_str() << (_rbIsDouble ? "\" is a double" : "\" is an int") << std::endl;
+	std::cout << "\nIsStringInt: \"" << _str.c_str() << (_rbIsDouble ? "\" is a double\n" : "\" is an int\n");
 
 	return(true);
 }
@@ -734,7 +734,7 @@ bool ShortestPalindrome(std::string _str, std::string& _rstrPalindrome)
 
 	if (iShortest < INT_MAX)
 	{
-		std::cout << _rstrPalindrome.c_str() << std::endl;
+		std::cout << _rstrPalindrome.c_str() << "\n";
 		return(true);
 	}
 
@@ -773,7 +773,7 @@ void StringPermutations(std::string _str)
 		std::cout << strPerm.c_str() << " ";
 	}
 
-	std::cout << std::endl;
+	std::cout << "\n";
 }
 
 
@@ -898,7 +898,7 @@ int main()
 
 	std::vector<int> vecBSA = { 5,3,7,8,9,1,5,7,9,4,263,5,1,6 };
 	int iResult;
-	std::cout << (BinarySearch(vecBSA, 5, iResult) ? "\nBSA: Result found" : "\nBSA: Result not found") << std::endl;
+	std::cout << (BinarySearch(vecBSA, 5, iResult) ? "\nBSA: Result found\n" : "\nBSA: Result not found\n");
 
 	Primes(100);
 	BinaryForm(345345);
