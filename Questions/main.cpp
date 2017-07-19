@@ -10,6 +10,8 @@
 #include <unordered_set>
 #include <deque>
 #include <memory>
+#include <sstream>
+#include <random>
 
 struct IndexFrequency
 {
@@ -408,24 +410,6 @@ double Multiply(double _dX, double _dY)
 	std::cout << "\nMultiply: " << _dX << "*" << _dY << " = " << dTotal << "\n";
 
 	return(dResult);
-}
-
-int Rand5()
-{
-	return(rand() % 6);
-}
-
-int Rand7()
-{
-	int iRandom = 0;
-
-	// 8 * 5 = 40 total / 5 per = 1/8 chance (including 0)
-	for (int i = 1; i <= 8; ++i)
-	{
-		iRandom += Rand5();
-	}
-
-	return(int(floor(iRandom / 5)));
 }
 
 int Islands()
@@ -885,9 +869,123 @@ void ParseTextTags( std::string _str )
 		output.push_back( std::make_pair( current, tags ) );
 }
 
+std::string ToOrdinalForm( const long long _input )
+{
+	std::stringstream ss;
+	ss << _input;
+	
+	const auto mod = ( _input % 100 ) / 10 == 1 ? 0 : _input % 10;
+
+	switch( mod )
+	{
+	case 1: ss << "st"; break;
+	case 2: ss << "nd"; break;
+	case 3: ss << "rd"; break;
+	default: ss << "th"; break;
+	}
+
+	return ss.str( );
+}
+
+std::string ToEnglishForm( const long long _input )
+{
+	std::string ones[] = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+	std::string teens[] = { "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+	std::string tens[] = { "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+	std::string illions[] = { "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion" };
+	std::string decillions[] = { "undecillion", "duodecillion", "tredecillion", "quattuordecillion", "quindecillion", "sexdecillion", "septendecillion", "octodecillion", "novemdecillion", "vigintillion" };
+
+	if( _input == 0 )
+		return "zero";
+
+	// # of digits
+	std::stringstream ss;
+	ss << _input;
+	std::string strInput( ss.str( ) );
+
+	std::string output;
+
+	const auto and_string = [&]( ) -> std::string
+	{
+		return output.size( ) > 0 ? " and " : "";
+	};
+
+	const auto space_string = [&]( ) -> std::string
+	{
+		return output.size( ) > 0 ? " " : "";
+	};
+
+	const bool negative = strInput[0] == '-';
+
+	if( negative )
+		strInput[0] = '0';
+
+	auto digits = strInput.length( );
+
+	while( strInput.size( ) % 3 != 0 )
+		strInput = "0" + strInput;
+
+	for( unsigned i = 0; i < strInput.length( ); i += 3, digits -= 3 )
+	{
+		// Hundreds
+		if( strInput[i] != '0' )
+			output += space_string( ) + ones[char( strInput[i] - '0' - 1 )] + " hundred";
+
+		// Tens
+		if( strInput[i + 1] != '0' )
+		{
+			// Teens
+			if( strInput[i + 1] == '1' )
+				output += and_string( ) + teens[char( strInput[i + 2] - '0' )];
+			else
+				output += and_string( ) + tens[char( strInput[i + 1] - '0' - 2 )];
+		}
+
+		// Ones
+		if( strInput[i + 2] != '0' && strInput[i + 1] != '1' )
+			output += ( strInput[i + 1] == '0' && strInput[i] != '0' ? and_string( ) : space_string( ) ) + ones[char( strInput[i + 2] - '0' - 1 )];
+
+		// Thousands
+		if( digits >= 4 && digits < 7 )
+		{
+			output += " thousand";
+		}
+		// Illions
+		else if( digits >= 7 && digits < 35 )
+		{
+			output += space_string( ) + illions[( digits - 7 ) / 3];
+		}
+		// Decillions
+		else if( digits >= 35 && digits < 65 )
+		{
+			output += space_string( ) + decillions[( digits - 7 ) / 3];
+		}
+		else if( digits >= 65 )
+		{
+			std::cout << "\nNumber is too large to convert!\n";
+			return "";
+		}
+	}
+
+	if( negative )
+		output = "negative " + output;
+
+	return output;
+}
+
 int main()
 {
-	srand((unsigned int)(time(0)));
+	std::random_device rd;
+	std::mt19937 rng( rd( ) );
+	const auto max_long_long = std::numeric_limits< long long >::max( );
+	std::uniform_int_distribution<long long> distribution( -max_long_long, max_long_long );
+
+	const auto Rand = [&]( long long _min, long long _max = 0 ) -> long long
+	{
+		const auto max = _max == 0 ? _min : _max;
+		const auto min = _max == 0 ? 0 : _min;
+		return min + ( distribution( rng ) % ( long long )( max - min + 1 ) );
+	};
 
 	FrequentInt();
 	IntegerPairs();
@@ -928,7 +1026,38 @@ int main()
 
 	StringPermutations("ABC");
 
-	ParseTextTags( "Lorem ipsum <size=10>dolor sit amet,<size=5> <bold>consectetur</bold> <colour=red>adipiscing</colour> elit.</size> Donec eu arcu eget enim hendrerit</size> finibus eu vel<italic>dolor. In ultrices lorem odio, in condimentum massa luctus</italic> vel. Curabitur<size=15> id nibh mi. Proin orci erat,<size=12> porta in sem sit amet, condimentum aliquet ligula. Curabitur leo lacus,</size> aliquam <colour=green>auctor ullamcorper vitae, pulvinar eget lectus. Praesent <bold>felis risus, euismod at enim</bold> quis, consequat hendrerit magna.</colour> Class aptent <italic><bold> <colour=purple>taciti</colour></bold></italic> sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec varius sem sapien. Nam vitae scelerisque est, eget feugiat tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</size>" );
+	ParseTextTags( "Lorem ipsum <size=10>dolor sit amet,<size=5> <bold>consectetur</bold> <colour=red>adipiscing</colour> elit.</size>\
+		Donec eu arcu eget enim hendrerit</size> finibus eu vel<italic>dolor. In ultrices lorem odio, in condimentum massa luctus</italic>\
+		vel. Curabitur<size=15> id nibh mi. Proin orci erat,<size=12> porta in sem sit amet, condimentum aliquet ligula. Curabitur leo lacus,\
+		</size> aliquam <colour=green>auctor ullamcorper vitae, pulvinar eget lectus. Praesent <bold>felis risus, euismod at enim</bold> \
+		quis, consequat hendrerit magna.</colour> Class aptent <italic><bold> <colour=purple>taciti</colour></bold></italic> sociosqu ad \
+		litora torquent per conubia nostra, per inceptos himenaeos. Donec varius sem sapien. Nam vitae scelerisque est, eget feugiat tortor. \
+		Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</size>" );
+
+	for( int i = 0; i < 10; ++i )
+	{
+		const auto rand = Rand( 100000 );
+		std::cout << "\nToOrdinalForm( " << rand << " ) = " << ToOrdinalForm( rand );
+	}
+
+	std::cout << "\n";
+	std::cout << "\nToEnglishForm( 1 ) = " << ToEnglishForm( 1 );
+	std::cout << "\nToEnglishForm( 10 ) = " << ToEnglishForm( 10 );
+	std::cout << "\nToEnglishForm( 20 ) = " << ToEnglishForm( 20 );
+	std::cout << "\nToEnglishForm( 16 ) = " << ToEnglishForm( 16 );
+	std::cout << "\nToEnglishForm( 100 ) = " << ToEnglishForm( 100 );
+	std::cout << "\nToEnglishForm( 65 ) = " << ToEnglishForm( 65 );
+	std::cout << "\nToEnglishForm( 999 ) = " << ToEnglishForm( 999 );
+	std::cout << "\nToEnglishForm( 1000 ) = " << ToEnglishForm( 1000 );
+	std::cout << "\nToEnglishForm( 1005 ) = " << ToEnglishForm( 1005 );
+	std::cout << "\nToEnglishForm( 1615 ) = " << ToEnglishForm( 1615 );
+	std::cout << "\nToEnglishForm( -1,353,574,123,666 ) = " << ToEnglishForm( -1353574123666 );
+
+	for( int i = 0; i < 10; ++i )
+	{
+		const auto rand = Rand( 105605650000 );
+		std::cout << "\nToEnglishForm( " << rand << ") = " << ToEnglishForm( rand );
+	}
 
 	int iTemp;
 	std::cin >> iTemp;
