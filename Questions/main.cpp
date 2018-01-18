@@ -976,14 +976,18 @@ std::string ToEnglishForm( const long long _input )
 std::string ZigZag( std::string s, int numRows )
 {
 	std::string output;
-
+	int length = s.length();
+	 
+	if( numRows >= length || numRows == 1 )
+		return s;
+		
 	for ( int i = 0; i < numRows; ++i )
 	{
-		for ( int j = i; j < s.length(); j += ( numRows - 1 ) * 2 )
+		for ( int j = i; j < length; j += ( numRows - 1 ) * 2 )
 		{
 			output += s[j];
 
-			if ( i > 0 && i < numRows - 1 && j + ( numRows - 1 - i ) * 2 < s.length() )
+			if ( i > 0 && i < numRows - 1 && j + ( numRows - 1 - i ) * 2 < length )
 				output += s[j + ( numRows - 1 - i ) * 2];
 		}
 	}
