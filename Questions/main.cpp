@@ -973,6 +973,24 @@ std::string ToEnglishForm( const long long _input )
 	return output;
 }
 
+std::string ZigZag( std::string s, int numRows )
+{
+	std::string output;
+
+	for ( int i = 0; i < numRows; ++i )
+	{
+		for ( int j = i; j < s.length(); j += ( numRows - 1 ) * 2 )
+		{
+			output += s[j];
+
+			if ( i > 0 && i < numRows - 1 && j + ( numRows - 1 - i ) * 2 < s.length() )
+				output += s[j + ( numRows - 1 - i ) * 2];
+		}
+	}
+
+	return output;
+}
+
 int main()
 {
 	std::random_device rd;
@@ -1058,6 +1076,11 @@ int main()
 		const auto rand = Rand( 105605650000 );
 		std::cout << "\nToEnglishForm( " << rand << ") = " << ToEnglishForm( rand );
 	}
+
+
+	std::cout << "\nZigZag( \"PAYPALISHIRING\", 3 ) = " << ZigZag( "PAYPALISHIRING", 3 );
+	std::cout << "\nZigZag( \"PAYPALISHIRING\", 4 ) = " << ZigZag( "PAYPALISHIRING", 4 );
+
 
 	int iTemp;
 	std::cin >> iTemp;
