@@ -12,6 +12,7 @@
 #include <memory>
 #include <sstream>
 #include <random>
+#include <set>
 
 struct IndexFrequency
 {
@@ -976,7 +977,7 @@ std::string ToEnglishForm( const long long _input )
 std::string ZigZag( std::string s, int numRows )
 {
 	std::string output;
-	int length = s.length();
+	int length = ( int )s.length();
 	 
 	if( numRows >= length || numRows == 1 )
 		return s;
@@ -993,6 +994,167 @@ std::string ZigZag( std::string s, int numRows )
 	}
 
 	return output;
+}
+
+bool IsValidSudoku( std::vector< std::vector< char > >& board )
+{
+	for( int i = 0; i < 9; ++i )
+	{
+		std::unordered_set< char > hash_map_a, hash_map_b, hash_map_c;
+
+		for( int j = 0; j < 9; ++j )
+		{
+			// Horizontal
+			if( board[i][j] != '.' && hash_map_a.find( board[i][j] ) != hash_map_a.end() )
+				return false;
+			hash_map_a.insert( board[i][j] );
+
+			// Vertical
+			if( board[j][i] != '.' && hash_map_b.find( board[j][i] ) != hash_map_b.end() )
+				return false;
+			hash_map_b.insert( board[j][i] );
+
+			// Square
+			const int x = 3 * ( i % 3 ) + j % 3;
+			const int y = 3 * ( i / 3 ) + j / 3;
+			if( board[y][x] != '.' && hash_map_c.find( board[y][x] ) != hash_map_c.end() )
+				return false;
+			hash_map_c.insert( board[y][x] );
+		}
+	}
+
+	return true;
+}
+
+bool TrySudokuPosition( std::vector< std::vector< char > >& board, int current_index_x, int current_index_y )
+{
+	// Find next valid position
+	while( board[current_index_y][current_index_x] != '.' )
+	{
+		current_index_x++;
+		if( current_index_x >= 9 )
+		{
+			current_index_x = 0;
+			current_index_y++;
+
+			if( current_index_y >= 9 )
+				return true;
+		}
+	}
+
+	// Place number
+	char number_to_try = '0';
+
+	while( number_to_try < '9' )
+	{
+		bool valid = true;
+		number_to_try++;
+		board[current_index_y][current_index_x] = number_to_try;
+
+		// Check board is valid from this change
+		for( int i = 0; i < 9; ++i )
+		{
+			// Horizontal
+			if( i != current_index_x && board[current_index_y][i] == number_to_try )
+			{
+				valid = false;
+				break;
+			}
+
+			// Vertical
+			if( i != current_index_y && board[i][current_index_x] == number_to_try )
+			{
+				valid = false;
+				break;
+			}
+
+			// Square
+			const int x = ( current_index_x - current_index_x % 3 ) + i % 3;
+			const int y = ( current_index_y - current_index_y % 3 ) + i / 3;
+
+			if( x != current_index_x && y != current_index_y && board[y][x] == number_to_try )
+			{
+				valid = false;
+				break;
+			}
+		}
+
+		if( !valid )
+			board[current_index_y][current_index_x] = '.';
+		else if( !TrySudokuPosition( board, current_index_x, current_index_y ) )
+			board[current_index_y][current_index_x] = '.';
+		else
+			return true;
+	}
+
+	return false;
+}
+
+void SolveSudoku( std::vector< std::vector< char > >& board )
+{
+	/* Brute force
+	- Attempt to place a number in next available position
+	- Check if this is valid firstly in the current square, then the vertical row, then the horizontal
+	- If it is valid, continue to next available position
+	- Otherwise, increment the number and try again
+	*/
+	const bool result = TrySudokuPosition( board, 0, 0 );
+	std::cout << ( result ? "\n\nSoduku successfully solved!\n" : "\n\nNo solution found for Soduku!\n" );
+}
+
+double FindMedianArray( std::vector< int >& nums )
+{
+	const auto size = nums.size();
+	if( size == 1 )
+		return nums[0];
+	else
+		return ( size & 1 ? nums[size / 2] : ( nums[size / 2 - 1] + nums[size / 2] ) / 2.0 );
+}
+
+const int GetRomanValue( const char c )
+{
+	switch( c )
+	{
+	case 'I':   return 1;
+	case 'V':   return 5;
+	case 'X':   return 10;
+	case 'L':   return 50;
+	case 'C':   return 100;
+	case 'D':   return 500;
+	case 'M':   return 1000;
+	default:	return 0;
+	}
+}
+
+int RomanToInt( std::string s )
+{
+	if( s.empty() )
+		return 0;
+
+	if( s.size() == 1 )
+		return GetRomanValue( s.front() );
+
+	int iResult = 0;
+	int iPrevious = 0;
+
+	for( unsigned i = 0; i < s.size(); ++i )
+	{
+		const auto iNew = GetRomanValue( s[i] );
+
+		if( i > 0 )
+		{
+			if( iPrevious < iNew )
+				iResult -= iPrevious;
+			else
+				iResult += iPrevious;
+		}
+
+		iPrevious = iNew;
+	}
+
+	iResult += iPrevious;
+
+	return iResult;
 }
 
 int main()
@@ -1082,9 +1244,45 @@ int main()
 	}
 
 
-	std::cout << "\nZigZag( \"PAYPALISHIRING\", 3 ) = " << ZigZag( "PAYPALISHIRING", 3 );
+	std::cout << "\n\nZigZag( \"PAYPALISHIRING\", 3 ) = " << ZigZag( "PAYPALISHIRING", 3 );
 	std::cout << "\nZigZag( \"PAYPALISHIRING\", 4 ) = " << ZigZag( "PAYPALISHIRING", 4 );
 
+	std::vector< std::vector< char > > board =
+	{
+		{ '.', '.', '.', '.', '.', '.', '.', '.', '.' },
+		{ '.', '.', '.', '.', '.', '.', '3', '.', '.' },
+		{ '.', '.', '.', '1', '8', '.', '.', '.', '.' },
+		{ '.', '.', '.', '7', '.', '.', '.', '.', '.' },
+		{ '.', '.', '.', '.', '1', '.', '9', '7', '.' },
+		{ '.', '.', '.', '.', '.', '.', '.', '.', '.' },
+		{ '.', '.', '.', '3', '6', '.', '1', '.', '.' },
+		{ '.', '.', '.', '.', '.', '.', '.', '.', '.' },
+		{ '.', '.', '.', '.', '.', '.', '.', '2', '.' }
+	};
+
+	IsValidSudoku( board );
+
+	std::vector< std::vector< char > > board2 =
+	{
+		{ '5', '3', '.', '.', '7', '.', '.', '.', '.' },
+		{ '6', '.', '.', '1', '9', '5', '.', '.', '.' },
+		{ '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+		{ '8', '.', '.', '.', '6', '.', '.', '.', '3' },
+		{ '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+		{ '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+		{ '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+		{ '.', '.', '.', '4', '1', '9', '.', '.', '5' },
+		{ '.', '.', '.', '.', '8', '.', '.', '7', '9' }
+	};
+	
+	SolveSudoku( board2 );
+
+	RomanToInt( "III" );
+	RomanToInt( "IV" );
+	RomanToInt( "VI" );
+	RomanToInt( "VII" );
+	RomanToInt( "VIII" );
+	RomanToInt( "IX" );
 
 	int iTemp;
 	std::cin >> iTemp;
