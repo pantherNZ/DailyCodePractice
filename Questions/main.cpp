@@ -1157,6 +1157,11 @@ int RomanToInt( std::string s )
 	return iResult;
 }
 
+void FindQuailibriaPoints( std::vector< int >& nums )
+{
+
+}
+
 int main()
 {
 	std::random_device rd;
@@ -1283,6 +1288,10 @@ int main()
 	RomanToInt( "VII" );
 	RomanToInt( "VIII" );
 	RomanToInt( "IX" );
+
+	FindQuailibriaPoints( std::vector<int>{ 3, -2, 2, 0, 3, 4, -6, 3, 5, -4, 8 } );
+	FindQuailibriaPoints( std::vector<int>{ 9, 0, -5, -4, 1, 4, -4, -9, 0, -7, -1 } );
+	FindQuailibriaPoints( std::vector<int>{ 9, -7, 6, -8, 3, -9, -5, 3, -6, -8, 5 } );
 
 	int iTemp;
 	std::cin >> iTemp;
