@@ -1162,6 +1162,77 @@ void FindQuailibriaPoints( std::vector< int >& nums )
 
 }
 
+void CricketSolver( const std::string& input )
+{
+	constexpr unsigned batsmanCount = 11U;
+	std::array< unsigned, batsmanCount > batsman{ 0 };
+	unsigned extraRuns = 0U;
+	unsigned striker = 0U;
+	unsigned batsman2 = 1U;
+	unsigned ballCount = 0U;
+
+	for( auto& c : input )
+	{
+		bool exit_loop = false;
+
+		switch( c )
+		{
+		case '.':
+			break;
+		case 'b':
+		{
+			extraRuns++;
+			std::swap( striker, batsman2 );
+			break;
+		}
+		case 'w':
+		{
+			extraRuns++;
+			break;
+		}
+		case 'W':
+		{
+			// Swap strikers to next available one
+			unsigned next_batter = std::max( striker, batsman2 );
+			exit_loop = striker >= batsmanCount;
+			striker = std::min( batsmanCount, next_batter + 1U );
+			break;
+		}
+		default:
+		{
+			// Add runs
+			if( c >= '0' && c <= '9' )
+			{
+				int runs = ( c - '0' );
+				batsman[striker] += runs;
+
+				if( ( runs & 1 ) == 1 )
+					std::swap( striker, batsman2 );
+			}
+			break;
+		}
+		}
+
+		if( exit_loop )
+			break;
+
+		if( c != 'w' )
+		{
+			ballCount++;
+
+			if( ballCount >= 6 )
+			{
+				ballCount = 0;
+				std::swap( striker, batsman2 );
+			}
+		}
+	}
+
+	for( unsigned i = 0; i <= std::max( striker, batsman2 ); ++i )
+		std::cout << "P" << i << ": " << batsman[i] << " ";
+	std::cout << "Extras: " << extraRuns;
+}
+
 int main()
 {
 	std::random_device rd;
@@ -1292,6 +1363,8 @@ int main()
 	FindQuailibriaPoints( std::vector<int>{ 3, -2, 2, 0, 3, 4, -6, 3, 5, -4, 8 } );
 	FindQuailibriaPoints( std::vector<int>{ 9, 0, -5, -4, 1, 4, -4, -9, 0, -7, -1 } );
 	FindQuailibriaPoints( std::vector<int>{ 9, -7, 6, -8, 3, -9, -5, 3, -6, -8, 5 } );
+
+	CricketSolver( "1.2wW6.2b34" );
 
 	int iTemp;
 	std::cin >> iTemp;
