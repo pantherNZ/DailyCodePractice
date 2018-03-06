@@ -13,6 +13,9 @@
 #include <sstream>
 #include <random>
 #include <set>
+#include <typeindex>
+
+#include "test.h"
 
 struct IndexFrequency
 {
@@ -1157,9 +1160,32 @@ int RomanToInt( std::string s )
 	return iResult;
 }
 
-void FindQuailibriaPoints( std::vector< int >& nums )
+// https://www.reddit.com/r/dailyprogrammer/comments/7vx85p/20180207_challenge_350_intermediate_balancing_my/
+void FindEquailibriaPoints( std::vector< int >& nums )
 {
+	std::cout << "FindEquailibriaPoints( ";
 
+	size_t count = nums.size();
+	std::vector< int > reverse_totals( count );
+	int forward_total = 0;
+	reverse_totals[count - 1] = 0;
+
+	for( size_t i = count - 1; i > 0; --i )
+	{
+		reverse_totals[i - 1] = nums[i] + ( i < count - 1 ? reverse_totals[i] : 0 );
+		std::cout << i << ", ";
+	}
+
+	std::cout << ");\n";
+
+	for( size_t i = 0; i < count; ++i )
+	{
+		if( forward_total == reverse_totals[i] )
+			std::cout << i << " ";
+		forward_total += nums[i];
+	}
+
+	std::cout << "\n\n";
 }
 
 void CricketSolver( const std::string& input )
@@ -1294,26 +1320,26 @@ int main()
 		litora torquent per conubia nostra, per inceptos himenaeos. Donec varius sem sapien. Nam vitae scelerisque est, eget feugiat tortor. \
 		Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</size>" );
 
-	for( int i = 0; i < 10; ++i )
+	//for( int i = 0; i < 10; ++i )
 	{
 		const auto rand = Rand( 100000 );
 		std::cout << "\nToOrdinalForm( " << rand << " ) = " << ToOrdinalForm( rand );
 	}
 
 	std::cout << "\n";
-	std::cout << "\nToEnglishForm( 1 ) = " << ToEnglishForm( 1 );
-	std::cout << "\nToEnglishForm( 10 ) = " << ToEnglishForm( 10 );
-	std::cout << "\nToEnglishForm( 20 ) = " << ToEnglishForm( 20 );
-	std::cout << "\nToEnglishForm( 16 ) = " << ToEnglishForm( 16 );
-	std::cout << "\nToEnglishForm( 100 ) = " << ToEnglishForm( 100 );
-	std::cout << "\nToEnglishForm( 65 ) = " << ToEnglishForm( 65 );
-	std::cout << "\nToEnglishForm( 999 ) = " << ToEnglishForm( 999 );
-	std::cout << "\nToEnglishForm( 1000 ) = " << ToEnglishForm( 1000 );
-	std::cout << "\nToEnglishForm( 1005 ) = " << ToEnglishForm( 1005 );
-	std::cout << "\nToEnglishForm( 1615 ) = " << ToEnglishForm( 1615 );
-	std::cout << "\nToEnglishForm( -1,353,574,123,666 ) = " << ToEnglishForm( -1353574123666 );
+	//std::cout << "\nToEnglishForm( 1 ) = " << ToEnglishForm( 1 );
+	//std::cout << "\nToEnglishForm( 10 ) = " << ToEnglishForm( 10 );
+	//std::cout << "\nToEnglishForm( 20 ) = " << ToEnglishForm( 20 );
+	//std::cout << "\nToEnglishForm( 16 ) = " << ToEnglishForm( 16 );
+	//std::cout << "\nToEnglishForm( 100 ) = " << ToEnglishForm( 100 );
+	//std::cout << "\nToEnglishForm( 65 ) = " << ToEnglishForm( 65 );
+	//std::cout << "\nToEnglishForm( 999 ) = " << ToEnglishForm( 999 );
+	//std::cout << "\nToEnglishForm( 1000 ) = " << ToEnglishForm( 1000 );
+	//std::cout << "\nToEnglishForm( 1005 ) = " << ToEnglishForm( 1005 );
+	//std::cout << "\nToEnglishForm( 1615 ) = " << ToEnglishForm( 1615 );
+	//std::cout << "\nToEnglishForm( -1,353,574,123,666 ) = " << ToEnglishForm( -1353574123666 );
 
-	for( int i = 0; i < 10; ++i )
+	//for( int i = 0; i < 10; ++i )
 	{
 		const auto rand = Rand( 105605650000 );
 		std::cout << "\nToEnglishForm( " << rand << ") = " << ToEnglishForm( rand );
@@ -1360,11 +1386,25 @@ int main()
 	RomanToInt( "VIII" );
 	RomanToInt( "IX" );
 
-	FindQuailibriaPoints( std::vector<int>{ 3, -2, 2, 0, 3, 4, -6, 3, 5, -4, 8 } );
-	FindQuailibriaPoints( std::vector<int>{ 9, 0, -5, -4, 1, 4, -4, -9, 0, -7, -1 } );
-	FindQuailibriaPoints( std::vector<int>{ 9, -7, 6, -8, 3, -9, -5, 3, -6, -8, 5 } );
+	FindEquailibriaPoints( std::vector<int>{ 0, -3, 5, -4, -2, 3, 1, 0 } );
+	FindEquailibriaPoints( std::vector<int>{ 3, -2, 2, 0, 3, 4, -6, 3, 5, -4, 8 } );
+	FindEquailibriaPoints( std::vector<int>{ 9, 0, -5, -4, 1, 4, -4, -9, 0, -7, -1 } );
+	FindEquailibriaPoints( std::vector<int>{ 9, -7, 6, -8, 3, -9, -5, 3, -6, -8, 5 } );
 
 	CricketSolver( "1.2wW6.2b34" );
+
+	const auto testtype = std::type_index( typeid( ComponentHandle ) );
+
+	BaseHandle::manager = std::make_unique< HandleManager >();
+	BaseHandle::manager->data = new int( 5 );
+
+	ObjectHandle test;
+	std::cout << test->data;
+
+	ComponentHandle test2;
+	std::cout << test2->data;
+
+	delete BaseHandle::manager->data;
 
 	int iTemp;
 	std::cin >> iTemp;
