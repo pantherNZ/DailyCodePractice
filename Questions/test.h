@@ -1,17 +1,5 @@
 #pragma once
 
-class Object
-{
-public:
-	int data = 15;
-};
-
-class Component
-{
-public:
-	int data = 10;
-};
-
 template< class T >
 class Handle;
 
@@ -34,10 +22,13 @@ public:
 };
 
 template< class T >
-class Handle : BaseHandle
+class Handle : public BaseHandle
 {
 public:
-	T* Get() const
+	Handle() {}
+	Handle( BaseHandle t ): BaseHandle( t ) { }
+
+	T * Get() const
 	{
 		return manager->GetAs< T >( *this );
 	}
@@ -46,6 +37,26 @@ public:
 	{
 		return Get();
 	}
+};
+
+class Entity
+{
+public:
+	virtual ~Entity() { std::cout << "\nEntity destructor called\n"; }
+	class BaseHandle self;
+};
+
+class Object : public Entity
+{
+public:
+	~Object() { std::cout << "\nObject destructor called\n"; }
+	int data = 15;
+};
+
+class Component
+{
+public:
+	int data = 10;
 };
 
 typedef Handle< Object > ObjectHandle;

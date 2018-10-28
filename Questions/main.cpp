@@ -14,6 +14,7 @@
 #include <random>
 #include <set>
 #include <typeindex>
+#include <array>
 
 #include "test.h"
 
@@ -1191,7 +1192,7 @@ void FindEquailibriaPoints( std::vector< int >& nums )
 void CricketSolver( const std::string& input )
 {
 	constexpr unsigned batsmanCount = 11U;
-	std::array< unsigned, batsmanCount > batsman{ 0 };
+	std::array< unsigned, batsmanCount > batsman = { 0 };
 	unsigned extraRuns = 0U;
 	unsigned striker = 0U;
 	unsigned batsman2 = 1U;
@@ -1257,6 +1258,39 @@ void CricketSolver( const std::string& input )
 	for( unsigned i = 0; i <= std::max( striker, batsman2 ); ++i )
 		std::cout << "P" << i << ": " << batsman[i] << " ";
 	std::cout << "Extras: " << extraRuns;
+}
+
+void Test( Handle< int > test )
+{
+	std::cout << "nblafgh";
+}
+
+class BaseClass
+{
+public:
+	virtual void DoStuff() { std::cout << "\nBase class"; }
+};
+
+class DerivedClass : public BaseClass
+{
+public:
+	void DoStuff() final { std::cout << "\nDerived class"; }
+};
+
+void WeakPtrTest()
+{
+	std::vector< std::shared_ptr< BaseClass > > storage;
+	storage.push_back( std::make_shared< DerivedClass >() );
+	storage.front()->DoStuff();
+
+	auto passed_around = std::weak_ptr< DerivedClass >( std::static_pointer_cast< DerivedClass>( storage.front() ) );
+
+	if( auto ptr = passed_around.lock() )
+		ptr->DoStuff();
+
+	storage.clear();
+
+	std::cout << ( passed_around.expired() ? "\nExpired" : "\nValid" );
 }
 
 int main()
@@ -1393,18 +1427,22 @@ int main()
 
 	CricketSolver( "1.2wW6.2b34" );
 
-	const auto testtype = std::type_index( typeid( ComponentHandle ) );
+	auto obj = Object();
+	Entity* b = &obj;
+	b->~Entity();
 
-	BaseHandle::manager = std::make_unique< HandleManager >();
-	BaseHandle::manager->data = new int( 5 );
+	const auto test = Handle< int >();
+	//const auto base = BaseHandle();
+	auto test2 = Handle< char >();
 
-	ObjectHandle test;
-	std::cout << test->data;
+	const auto testfunc = []( Handle< int > input )
+	{
+		std::cout << "test wahtever";
+	};
 
-	ComponentHandle test2;
-	std::cout << test2->data;
+	Test( test2 );
 
-	delete BaseHandle::manager->data;
+	WeakPtrTest();
 
 	int iTemp;
 	std::cin >> iTemp;
