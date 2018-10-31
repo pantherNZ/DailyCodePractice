@@ -1268,24 +1268,42 @@ void Test( Handle< int > test )
 class BaseClass
 {
 public:
-	virtual void DoStuff() { std::cout << "\nBase class"; }
+	BaseClass( int t ) : i( t ) {}
+	virtual void DoStuff() { std::cout << "\nBase class: " << i; }
+	int i = 0;
 };
 
 class DerivedClass : public BaseClass
 {
 public:
-	void DoStuff() final { std::cout << "\nDerived class"; }
+	DerivedClass( int t ) : BaseClass( t ) {}
+	void DoStuff() final { std::cout << "\nDerived class: " << i; }
 };
+
+void PassWeakPtrAround( const std::weak_ptr< DerivedClass >& test )
+{
+	if( auto ptr = test.lock() )
+		ptr->DoStuff();
+}
 
 void WeakPtrTest()
 {
 	std::vector< std::shared_ptr< BaseClass > > storage;
-	storage.push_back( std::make_shared< DerivedClass >() );
+	storage.push_back( std::make_shared< DerivedClass >( 5 ) );
 	storage.front()->DoStuff();
 
 	auto passed_around = std::weak_ptr< DerivedClass >( std::static_pointer_cast< DerivedClass>( storage.front() ) );
 
-	if( auto ptr = passed_around.lock() )
+	const auto test = [&]() -> const std::weak_ptr< DerivedClass >& { return passed_around; };
+	const auto another = std::weak_ptr< DerivedClass >( passed_around );
+	
+	if( auto ptr = another.lock() )
+	{
+		ptr->i = 10;
+		ptr->DoStuff();
+	}
+
+	if( auto ptr = test().lock() )
 		ptr->DoStuff();
 
 	storage.clear();
