@@ -17,6 +17,7 @@
 #include <array>
 
 #include "test.h"
+#include "HandleClass.h"
 
 struct IndexFrequency
 {
@@ -1309,6 +1310,8 @@ void WeakPtrTest()
 	storage.clear();
 
 	std::cout << ( passed_around.expired() ? "\nExpired" : "\nValid" );
+
+	const auto handle = Reflex::Core::Handle< DerivedClass >( storage.front() );
 }
 
 int main()
