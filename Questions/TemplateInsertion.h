@@ -11,6 +11,12 @@ public:
 	{ 
 	}
 
+	template< typename T >
+	void ExampleTemplateFunc()
+	{
+
+	}
+
 private:
 	const std::string name;
 	const int id = 0;
@@ -41,6 +47,11 @@ public:
 	Fireball( const std::string& actionName, const int actionId )
 		: Projectile( actionName, actionId )
 	{
+		// The this-> here is required for GCC compilation
+		std::cout << "Name = " << this->name;
+
+		// The template specifier here is required for GCC compilation
+		this->template ExampleTemplateFunc();
 	}
 };
 
