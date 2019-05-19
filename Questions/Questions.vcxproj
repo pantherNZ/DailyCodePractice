@@ -149,6 +149,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TemplateInsertion.h" />
     <ClInclude Include="HandleClass.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
