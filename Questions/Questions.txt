@@ -1,0 +1,11 @@
+Swap two integers in a function that are passed by ref
+Binary semaphore, critical section, mutexes
+Analyses this code for errors
+Design classes for a simple 2d shooting minigame
+Given two sets each of unique integers, algorithm to create a new 3rd set that is the combination of both sets but without duplicates. Time complexities of sorting vs not etc
+Given a set of integers 1..N, a single integer is removed and then shuffled. Find the missing integer
+Analyse a template stack class and find faults
+Line segment collision with triangle in 3d space
+Algorithm overview for an AI to travel from one side of a room to another dodging obstacles
+Difficulties with multi threaded code
+Analyse problems with this code, creating a giant array of particles ofln the stack
