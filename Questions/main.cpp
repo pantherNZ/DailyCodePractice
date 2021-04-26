@@ -1307,11 +1307,11 @@ void WeakPtrTest()
 	if( auto ptr = test().lock() )
 		ptr->DoStuff();
 
-	storage.clear();
 
 	std::cout << ( passed_around.expired() ? "\nExpired" : "\nValid" );
 
 	const auto handle = Reflex::Core::Handle< DerivedClass >( storage.front() );
+	storage.clear();
 }
 
 int main()
