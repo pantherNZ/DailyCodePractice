@@ -1,0 +1,20 @@
+Main things to look out for:
+ - Does the code handle both test cases correctly?
+ - See what sort of data structure they choose to use (do they make the realisation that it really is just a 2d grid, with the movements being different depending on the row?)
+ - Space efficiency / time complexity
+ - Obvious flaws like copying strings / data around, inefficienies, pointer usages etc.
+ - What sort of search algorithm? Generally this is best suited as recursion, but there are other options that may be less obvious
+ - How adjustable is the code in regards to # of bricks / size of the wall? Same with changing the symbols used to represent (are they hard coded in a lot of places?).
+
+
+Follow up questions:
+ - Discuss what went wrong if they didn't finish it
+ - If they had more time, what would they have done next (without acatually coding it, just discuss)
+ - How would they modify the program so that it outputs the path the water would take (indices of the spots)?
+ - How would they handle the challenge if there was a million rows or columns?
+ - Can the data parsing and search be done in the same loop? Is it worth it / what are the pros/cons?
+
+
+Bricks.cpp provides an example solution to the problem.
+Bricks_With_Path.cpp provides the same example but expanded to output the path to the destination.
+These are just examples and are far from perfect, but roughly demonstrate what a simple solution may look like.

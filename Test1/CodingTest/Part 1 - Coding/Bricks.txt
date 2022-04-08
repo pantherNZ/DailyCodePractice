@@ -1,0 +1,45 @@
+The following is a programming test
+You can spend up to a maximum of 1 hour completing the test.
+You may use the internet to look up simple syntax / cpp references that you can't remember off of your head. Please do not search for algorithms or use any code you find on the internet!
+After the hour, the test will follow with a discussion of your solution including: what worked, an issues you may have ran into, potential improvements and further expansion (different scenarios etc.).
+
+Problem description:
+The following two blocks of symbols are visual representations of brick walls (two separate test cases). 
+Pairs of square brackets "[]" mean there is a brick in that spot whereas curley braces "{}" mean there is a gap in that spot.
+Every spot in the wall is represented by a pair of either square brackets or curley braces.
+A gap in the wall (curley braces) means water can pass through it, whereas a brick (square backets) means water cannot pass through.
+Water can travel to the left, to the right, downwards to the left (diagonal) or downwards to the right (diagonal).
+Water can not travel upwards and cannot move outside the bounds of the wall.
+
+The goal of this problem is to determine the following:
+	- If water was poured along the top row (onto every spot along the top of the wall), would the water reach through bottom (find a gap in the last row)?
+
+NOTE: Although it isn't the priority of this test, it is preferred your code parses the test cases from the files "Bricks_Case_1.txt" and "Bricks_Case_2.txt".
+
+
+Test case 1:
+
+[]{}[][]{}{}[][][]{}[]
+ []{}[][][][][]{}{}[]
+[]{}[][][]{}[]{}[]{}{}
+ []{}{}[]{}[][]{}[][]
+{}[][]{}{}[]{}[]{}{}[]
+ [][]{}[]{}[][][][]{}
+{}[]{}[][]{}{}[][]{}[]
+ [][][][]{}[]{}[]{}[]
+[]{}{}[][][]{}[]{}{}[]
+ []{}[][][][][]{}[][]
+
+
+Test case 2:
+
+[]{}[][]{}{}[][][]{}[]
+ []{}[][][][][]{}{}[]
+[]{}[][][]{}[]{}[]{}{}
+ []{}{}[]{}[][][][][]
+{}[][]{}{}[]{}[]{}{}[]
+ [][]{}[]{}[][][][]{}
+{}[]{}[][]{}{}[][]{}[]
+ [][][][]{}[]{}[]{}[]
+[]{}{}[][][]{}[]{}{}[]
+ []{}[][][][][]{}[][]

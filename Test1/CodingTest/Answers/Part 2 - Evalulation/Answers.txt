@@ -1,0 +1,101 @@
+PART 1
+ compile errors:
+ recursive function isn't forward declared
+  - Solution is to either move the function to above main where it's used, or forward declare (probably cleaner)
+
+"if( found == connections.back() )" is invalid
+ - Solution: Should be checking against end()
+
+"for( const auto* connection : connections )" is invalid
+ - Solution: Can't be a pointer, should change to be a reference: "const auto&"
+
+
+ logic errors:
+ The regex fails to properly escape the second whitespace part (\s instead of \\s), this shows as a warning during compilation
+
+ In the search, when looking for connections, it returns false if the node was visited
+  - Solution: It should continue, so it checks the remaining connections
+
+In the search, it fails to check both ways for the connection (example is going from Auckland -> Fiji, it fails to find the connection because of the line:
+	"if( connection.from != current )"
+	Solution: Needs to check either the to or the from matching the current
+	 Or a more complex solution such as below; sorting the cities lexicographically when parsing so we always know which to check as the 'from'
+
+  Although currently time is not used, the regex and parsing doesn't currently handle the decimals
+  - Solution: Change the regex to allow for the decimal, change the connection to store a float, change atoi to use atof in the parsing
+
+ when adding new cities, doesn't check for connections that match but are the opposite direction
+   - the dataset has this issue with Vancouver to Auckland, which means this connection will get checked twice
+   - Solution: Best thing is the candidate notices this problem and then asks what the correct behaviour should be
+	 - In the current state based on the criteria, it would be acceptable to modify the std::find_if in the parsing to check for the reverse connection
+	 - This particular issue can tend towards further discussion such as:
+	   - What happens if the travel time was different between the reversed ones?
+	   - Maybe we need to support different airlines for different flights in the future (so instead of rejecting, we now have multiple valid paths)
+
+
+ general issues:
+ doesn't check if the input file actually was found / opened successfully
+  - Solution: Check file.is_open() and error message instead of just continuing and silently saying there is a valid connection
+		(because dest & current would match with empty strings)
+
+ regex recreate every iteration of the loop
+  - Solution is to just create the regex once outside the loop
+
+ connections stored using strings
+  - This is a major shortfall of this coe
+  - Solution: One option is to store the cities in a separate vector and then the connections could store indices into the cities vector to avoid strings
+
+connections stored in a vector (slow lookup)
+ - Solution: Store them in an unordered map using the friom city as the key, you'd then need to store the connections in a further container 
+		(a vector or unordered set would likely be fine: vector better for the iteration part during the search, set better for the initial parsing to check dupes)
+	Bonus points to identify that you'd have to check both the destination & origin as the key in this case
+	Maybe worth sorting lexicographically during passing so you don't end up with duplicate / reversed entries EG:
+	Vancouver -> Auckland & Auckland -> Vancouver would create two keys but sorting by name could result in less total keys (because leaf / end nodes
+	wouldn't end up with entries)
+	This would mean you would also have to sort the dest/origin when searching to use the right key (may not actually be any faster, depends on dataset)
+
+strings are copied everywhere
+ - Solution: Ideally use string views, or const references is acceptable
+
+ string comparisons
+  - Solution: As above, try to store the cities (within the connections) as indices so the searching code doesn't need to do string comparisons
+
+visited is a vector (only used for adding to and checking)
+ - Solution: An unordered_set would be much more efficient and better suited
+	Although this can come as a drawback that you no longer know the order / sequence of visited nodes (see below)
+
+a new visited vector is constructed at every recursion level
+ - Main thing is the candidate notices this as a potential problem if there is a huge dataset
+ - Solution: Pass the visited by reference and then after trying all the connections for that city, pop the current city off the visited list 
+	(and then the next connection in the caller function will have the correct visited)
+	Other option is to change from using recursion and use local scoped data structures, although the search may get quite nasty this way
+
+distance_hours isn't initialised inside Connection, this could cause problems down the line if the code changed
+ - Solution: Initialise to 0
+
+
+ PART 2
+  - Simple way with the current code is to just return the visited vector if the destination is found (won't work if you changed it to an unordered set though)
+	This is not ideal in terms of copying another vector / data structure out up the recursion stack
+	One option is to have an additional vector (the path) passed as a reference to the search
+		- When the destination is found it adds the current node to the path vector
+		- Then back up the recursion, when each call returns true in succession, it adds it's current node to the path (the result being the path to the destination in reverse)
+	Another option is to store the "previous" connection alongside the connection data (using an index or pointer)
+		- This would be the index of the connection that gets you to this current connection from the previous city
+		- Then after finding the goal you can reverse back through these previous connections to find the path to the goal (in reverse)
+
+  - This involves expanding the search to keep track of the current 'cost' again either through the visited data structure, or inside the connections themselves
+	Then when processing, you can't bail early if you find the destination as there may be other, cheaper paths available
+	Better solution: Use an algorithm like A* and store the current cost / score (and use a heuristic like distance to goal) and only process the next cheapest node
+
+ - Performance: consider stack memory, this will become a problem
+	Duplicates and checking for them during parsing
+	As previous answer, prefer a heuristic based search instead of a brute force / depth first search
+	Multi-threading
+
+ - Infinite answers here but mainly:
+	Parsing data once, allow different input for the queries
+	Better error checking and info (what if data set is invalid? destination / origin invalid?
+	Storing connections/data in a database and handle updating/changes (particularly with distances, cost etc.)
+	 - Remove the nasty regex and raw text parsing
+	User interface et.

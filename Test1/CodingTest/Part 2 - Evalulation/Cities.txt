@@ -1,0 +1,10 @@
+Auckland -> Vancouver, 13.15 hours
+Vancouver -> Toronto, 6 hours
+Auckland -> Los Angeles, 12 hours
+Los Angeles -> London, 20.1 hours
+Auckland -> London, 24.3 hours
+Singapore -> London, 18.5 hours
+Auckland -> Melbourne, 4.2 hours
+Vancouver -> Alaska, 5 hours
+Fiji -> Auckland, 3.6 hours
+Vancouver -> Auckland, 13.05 hours
